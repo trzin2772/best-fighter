@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Best Fighter — Comunidade KOF 2002 | Chat, Desafios e Ranking</title>
+  <meta name="description" content="Best Fighter: a arena online da comunidade KOF 2002. Converse no chat global ou privado, desafie jogadores, aceite lutas e suba no ranking." />
+  <meta name="theme-color" content="#07060d" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Press+Start+2P&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- ================= TELA DE ENTRADA ================= -->
+  <section id="auth" class="auth">
+    <div class="auth-bg" aria-hidden="true"></div>
+    <div class="auth-inner">
+      <header class="auth-hero">
+        <p class="insert-coin">INSERT COIN</p>
+        <h1 class="logo logo-xl"><span>BEST</span><span>FIGHTER</span></h1>
+        <p class="tagline">A arena da comunidade <strong>KOF 2002</strong> · Chat · Desafios · Ranking</p>
+      </header>
+
+      <div class="card auth-card">
+        <div class="tabs" role="tablist">
+          <button id="tab-login" class="tab active" data-auth="login" role="tab">Entrar</button>
+          <button id="tab-register" class="tab" data-auth="register" role="tab">Criar lutador</button>
+        </div>
+
+        <form id="auth-form" autocomplete="on">
+          <label class="field">
+            <span>Nome de lutador</span>
+            <input id="auth-username" name="username" required minlength="3" maxlength="16" placeholder="ex: IoriBR" autocomplete="username" />
+          </label>
+          <label class="field">
+            <span>Senha</span>
+            <input id="auth-password" name="password" type="password" required minlength="6" placeholder="mínimo 6 caracteres" autocomplete="current-password" />
+          </label>
+
+          <div class="register-only">
+            <div class="field-row">
+              <label class="field">
+                <span>Onde você joga</span>
+                <select id="auth-platform" name="platform">
+                  <option value="android-ggpo">📱 Android · GGPO</option>
+                  <option value="pc-fightcade">💻 PC · Fightcade 2</option>
+                  <option value="pc-ggpo">💻 PC · GGPO</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Controle</span>
+                <select id="auth-control" name="control">
+                  <option value="touch">📱 Touch</option>
+                  <option value="joystick">🕹️ Arcade stick</option>
+                  <option value="controle">🎮 Controle</option>
+                  <option value="teclado">⌨️ Teclado</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <p id="auth-error" class="form-error" role="alert"></p>
+          <button id="auth-submit" class="btn btn-fire btn-block" type="submit">
+            <span class="btn-label">Entrar na arena</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= APLICATIVO ================= -->
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <a class="logo logo-sm" href="#" data-go="lobby"><span>BEST</span><span>FIGHTER</span></a>
+      <nav class="topnav" aria-label="Principal">
+        <button id="nav-lobby" class="navlink active" data-go="lobby">Lobby</button>
+        <button id="nav-guide" class="navlink" data-go="guide">Como jogar</button>
+        <button id="nav-profile" class="navlink" data-go="profile">Perfil</button>
+      </nav>
+      <div class="topbar-right">
+        <span id="online-pill" class="pill pill-live"><i></i><b id="online-count">0</b> online</span>
+        <button id="me-chip" class="me-chip" data-go="profile">
+          <img id="me-avatar" alt="" />
+          <span id="me-name"></span>
+        </button>
+        <button id="btn-logout" class="icon-btn" title="Sair" aria-label="Sair">⏻</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- ---------- LOBBY ---------- -->
+      <section id="view-lobby" class="view active" data-panel="chat">
+        <div class="lobby">
+          <!-- Jogadores -->
+          <aside class="panel panel-players">
+            <div class="panel-head">
+              <h2>Lutadores</h2>
+              <span class="chip-count" id="players-count">0</span>
+            </div>
+            <div class="search">
+              <input id="player-search" placeholder="Buscar lutador…" aria-label="Buscar lutador" />
+            </div>
+            <div class="seg" role="tablist">
+              <button class="seg-btn active" data-filter="online" id="filter-online">Online</button>
+              <button class="seg-btn" data-filter="all" id="filter-all">Todos</button>
+            </div>
+            <ul id="players-list" class="players-list"></ul>
+          </aside>
+
+          <!-- Chat -->
+          <section class="panel panel-chat">
+            <div class="chat-tabs" id="chat-tabs"></div>
+            <div class="chat-head" id="chat-head"></div>
+            <ol id="messages" class="messages" aria-live="polite"></ol>
+            <form id="chat-form" class="chat-form">
+              <input id="chat-input" maxlength="400" placeholder="Mande um salve para a galera…" autocomplete="off" aria-label="Mensagem" />
+              <button id="chat-send" class="btn btn-neon" type="submit" aria-label="Enviar">➤</button>
+            </form>
+          </section>
+
+          <!-- Desafios -->
+          <aside class="panel panel-challenges">
+            <div class="panel-head">
+              <h2>Desafios</h2>
+              <span class="chip-count hot" id="challenges-count">0</span>
+            </div>
+            <div id="challenges-list" class="challenges-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ---------- GUIA ---------- -->
+      <section id="view-guide" class="view">
+        <div class="page">
+          <header class="page-head">
+            <p class="eyebrow">Round 1 · Prepare-se</p>
+            <h2 class="page-title">Como jogar online</h2>
+            <p class="muted">O Best Fighter é onde você <b>encontra adversários, marca e registra as lutas</b>. A luta em si roda no emulador com netcode (GGPO / Fightcade), do jeito que você prefere: Android, PC, arcade stick, controle ou teclado.</p>
+          </header>
+
+          <ol class="steps">
+            <li class="step"><b>1</b><div><h3>Crie seu lutador</h3><p>No <a href="#" data-go="profile">Perfil</a>, informe onde joga e o seu <b>nome no GGPO / Fightcade</b>, que é como o adversário vai te achar.</p></div></li>
+            <li class="step"><b>2</b><div><h3>Desafie</h3><p>No lobby, clique em <b>⚔️ Desafiar</b> ao lado de um lutador e escolha o formato (FT3, FT5…).</p></div></li>
+            <li class="step"><b>3</b><div><h3>Conectem-se</h3><p>Quando o desafio for aceito, aparece o cartão da luta com o ID de cada um. Abram o mesmo app e entrem na sala do KOF 2002.</p></div></li>
+            <li class="step"><b>4</b><div><h3>Registre o placar</h3><p>No fim, um informa o placar e o outro confirma. A vitória vai pro seu perfil, e logo mais pro <b>ranking</b>.</p></div></li>
+          </ol>
+
+          <div class="guide-grid">
+            <article class="card guide-card">
+              <div class="guide-icon">📱</div>
+              <h3>Android · GGPO</h3>
+              <ul>
+                <li>Instale o app <a href="https://play.google.com/store/apps/details?id=com.ggpoz.app" target="_blank" rel="noopener">GGPO na Play Store</a>.</li>
+                <li>Entre na sala do <b>KOF 2002</b> e procure o nome do adversário.</li>
+                <li>Prefira Wi-Fi 5 GHz ou cabo para menos lag.</li>
+                <li>Dá para usar controle Bluetooth ou USB-OTG em vez do touch.</li>
+              </ul>
+            </article>
+            <article class="card guide-card">
+              <div class="guide-icon">💻</div>
+              <h3>PC · Fightcade 2</h3>
+              <ul>
+                <li>Baixe em <a href="https://www.fightcade.com" target="_blank" rel="noopener">fightcade.com</a> e crie sua conta.</li>
+                <li>Entre na sala <b>The King of Fighters 2002</b>.</li>
+                <li>Clique no nome do adversário → <i>Challenge</i>.</li>
+                <li>Use cabo de rede sempre que possível.</li>
+              </ul>
+            </article>
+            <article class="card guide-card">
+              <div class="guide-icon">🕹️</div>
+              <h3>Controles</h3>
+              <ul>
+                <li><b>Arcade stick / controle:</b> configure em <i>Input / Controls</i> no emulador.</li>
+                <li><b>Teclado:</b> sugestão: setas + <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd> (A, B, C, D).</li>
+                <li><b>Touch:</b> ajuste o tamanho e a opacidade dos botões no app.</li>
+                <li>Teste os comandos no modo treino antes do desafio.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="notice">
+            <b>⚠️ Importante:</b> os dois jogadores precisam usar o <b>mesmo app/emulador</b> (ex.: os dois no Fightcade) para conseguir se conectar. O Best Fighter avisa quando as plataformas são diferentes.
+            O Best Fighter não hospeda nem distribui ROMs: cada jogador usa o próprio emulador e a própria cópia do jogo.
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- PERFIL ---------- -->
+      <section id="view-profile" class="view">
+        <div class="page">
+          <div class="profile-hero card">
+            <img id="profile-avatar-big" class="avatar-xl" alt="Seu avatar" />
+            <div class="profile-hero-info">
+              <p class="eyebrow">Ficha do lutador</p>
+              <h2 id="profile-name" class="page-title"></h2>
+              <div class="stats">
+                <div class="stat"><b id="stat-wins">0</b><span>Vitórias</span></div>
+                <div class="stat"><b id="stat-losses">0</b><span>Derrotas</span></div>
+                <div class="stat"><b id="stat-rate">0%</b><span>Aproveit.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <form id="profile-form" class="card profile-form">
+            <h3 class="section-title">Escolha seu avatar</h3>
+            <div id="avatar-picker" class="avatar-picker"></div>
+
+            <div class="field-row">
+              <label class="field">
+                <span>Onde você joga</span>
+                <select id="pf-platform">
+                  <option value="android-ggpo">📱 Android · GGPO</option>
+                  <option value="pc-fightcade">💻 PC · Fightcade 2</option>
+                  <option value="pc-ggpo">💻 PC · GGPO</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Controle</span>
+                <select id="pf-control">
+                  <option value="touch">📱 Touch</option>
+                  <option value="joystick">🕹️ Arcade stick</option>
+                  <option value="controle">🎮 Controle</option>
+                  <option value="teclado">⌨️ Teclado</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label class="field">
+                <span>Seu nome no GGPO / Fightcade</span>
+                <input id="pf-emulator" maxlength="32" placeholder="como te encontram no emulador" />
+              </label>
+              <label class="field">
+                <span>Cidade / Fliperama</span>
+                <input id="pf-city" maxlength="40" placeholder="ex: São Paulo · Fliper do Zé" />
+              </label>
+            </div>
+            <label class="field">
+              <span>Time principal (3 personagens)</span>
+              <input id="pf-team" maxlength="60" placeholder="ex: Kula, K', Angel" />
+            </label>
+            <label class="field">
+              <span>Bio / Frase de vitória</span>
+              <textarea id="pf-bio" maxlength="160" rows="2" placeholder="ex: Volta pro treino, novato!"></textarea>
+            </label>
+            <button id="pf-save" class="btn btn-fire" type="submit">Salvar perfil</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Navegação mobile -->
+    <nav class="bottomnav" aria-label="Navegação mobile">
+      <button id="bn-players" data-go="lobby" data-panel="players"><i>👥</i>Lutadores</button>
+      <button id="bn-chat" class="active" data-go="lobby" data-panel="chat"><i>💬</i>Chat<em class="dot" id="bn-chat-dot"></em></button>
+      <button id="bn-challenges" data-go="lobby" data-panel="challenges"><i>⚔️</i>Desafios<em class="dot" id="bn-ch-dot"></em></button>
+      <button id="bn-guide" data-go="guide"><i>🕹️</i>Guia</button>
+      <button id="bn-profile" data-go="profile"><i>👤</i>Perfil</button>
+    </nav>
+  </div>
+
+  <!-- ================= MODAL ================= -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box card" id="modal-box"></div>
+  </div>
+
+  <!-- ================= TELA VS ================= -->
+  <div id="vs-screen" class="vs-screen hidden" aria-hidden="true">
+    <div class="vs-side vs-left"><img id="vs-img-a" alt="" /><b id="vs-name-a"></b></div>
+    <div class="vs-mark">VS</div>
+    <div class="vs-side vs-right"><img id="vs-img-b" alt="" /><b id="vs-name-b"></b></div>
+    <p class="vs-ready">READY? GO!</p>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
